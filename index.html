@@ -331,7 +331,7 @@
             });
         }
 
-        function drawCanvasFinal(ctx, canvas, startX, startY, charmWidth, charmHeight, imgObjects) {
+                function drawCanvasFinal(ctx, canvas, startX, startY, charmWidth, charmHeight, imgObjects) {
             bracelet.forEach((item, index) => {
                 const x = startX + (index * charmWidth);
                 const y = startY;
@@ -340,7 +340,28 @@
                 ctx.fillRect(x, y, charmWidth, charmHeight);
 
                 if (imgObjects[index]) {
-                    ctx.drawImage(imgObjects[index], x, y, charmWidth, charmHeight);
+                    const img = imgObjects[index];
+                    
+                    // ✨ 新增這幾行：計算圖片本身的寬高比與格子的比例
+                    const imgRatio = img.width / img.height;
+                    const boxRatio = charmWidth / charmHeight;
+
+                    let drawW = charmWidth;
+                    let drawH = charmHeight;
+                    let drawX = x;
+                    let drawY = y;
+
+                    // ✨ 新增這幾行：自動判斷並等比例縮放、置中，防止壓扁
+                    if (imgRatio > boxRatio) {
+                        drawH = charmWidth / imgRatio;
+                        drawY = y + (charmHeight - drawH) / 2;
+                    } else {
+                        drawW = charmHeight * imgRatio;
+                        drawX = x + (charmWidth - drawW) / 2;
+                    }
+
+                    // ✨ 帶入計算好的等比例尺寸來繪製
+                    ctx.drawImage(img, drawX, drawY, drawW, drawH);
                 }
 
                 ctx.strokeStyle = '#D1D5DB';
