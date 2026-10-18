@@ -84,7 +84,7 @@
             
             <div id="image-output-container" class="w-full aspect-square bg-[#FDEFF2] rounded-2xl overflow-hidden shadow-inner flex items-center justify-center border border-pink-100">
             </div>
-
+            <div id="display-user-note" class="mt-3 text-center text-sm text-gray-700 font-medium"></div>
             <div class="mt-4 text-center">
                 <span class="inline-block bg-pink-50 text-pink-500 text-[11px] font-medium px-3 py-1.5 rounded-full border border-pink-200">
                     👆 手機請長按圖片儲存至相簿
@@ -239,6 +239,16 @@
                 showToast('請至少選擇一個模塊再生成設計圖！');
                 return;
             }
+                    // 1. 抓取客人在首頁輸入的備註文字
+        const noteText = document.getElementById('user-note').value;
+
+        // 2. 把文字放進彈出視窗的空位裡 (如果有寫字才加「備註：」，沒寫就清空)
+        const noteDisplay = document.getElementById('display-user-note');
+        if (noteText.trim() !== "") {
+            noteDisplay.innerText = "備註：" + noteText;
+        } else {
+            noteDisplay.innerText = "";
+        }
 
             const canvas = document.createElement('canvas');
             canvas.width = 800;
