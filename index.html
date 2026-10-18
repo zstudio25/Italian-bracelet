@@ -37,7 +37,7 @@
 
         <!-- 手鍊展示台 -->
         <section class="flex flex-col items-center bg-white p-4 rounded-2xl border border-pink-200/60 shadow-inner">
-                <div class="text-xs font-medium text-gray-400 mb-3 tracking-wide">您的手鍊設計預覽 (最多 8 顆)</div>
+                <div class="text-xs font-medium text-gray-400 mb-3 tracking-wide">您的手鍊設計預覽 (請選擇6～8個模塊)</div>
     
     <div class="w-full overflow-x-auto pb-2">
         <div id="bracelet-slots" class="flex items-center justify-start sm:justify-center min-h-[55px] gap-1 px-1 min-w-max">
@@ -219,7 +219,7 @@
 
         function addCharm(charmId) {
             if (bracelet.length >= 8) {
-                showToast('最多只能排8顆模塊哦！');
+                showToast('最多只能選8個模塊哦！');
                 return;
             }
             const charm = charms.find(c => c.id === charmId);
@@ -285,13 +285,25 @@
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // 4. 繪製手鍊模塊
-            // 動態計算寬度，確保 1~8 顆都能完美塞進圖中並置中
-const charmWidth = Math.min(80, 560 / Math.max(bracelet.length, 1)); 
-const charmHeight = 78;
-const totalWidth = bracelet.length * charmWidth;
-const startX = (800 - totalWidth) / 2;
-const startY = 340 + (160 - charmHeight) / 2;
+                        // 4. 繪製手鍊模塊 (固定每個模塊的寬高比，不讓它變形壓縮)
+            const charmWidth = 70;  // 固定模塊寬度，維持完美比例
+            const charmHeight = 78;
+            const totalWidth = bracelet.length * charmWidth;
+            
+            // 讓白色卡片背景隨著模塊數量自動加寬，左右保留漂亮邊距
+            const cardWidth = Math.max(600, totalWidth + 60); 
+            const cardX = (800 - cardWidth) / 2;
+
+            // 重新畫出合適大小的白色卡片
+            ctx.fillStyle = '#FFFFFF';
+            ctx.roundRect(cardX, 340, cardWidth, 160, 24);
+            ctx.fill();
+            ctx.strokeStyle = '#FCE7F0';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            const startX = (800 - totalWidth) / 2;
+            const startY = 340 + (160 - charmHeight) / 2;
 
             let loadedImages = 0;
             const imgObjects = [];
