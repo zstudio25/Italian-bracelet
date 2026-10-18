@@ -37,11 +37,14 @@
 
         <!-- 手鍊展示台 -->
         <section class="flex flex-col items-center bg-white p-4 rounded-2xl border border-pink-200/60 shadow-inner">
-            <div class="text-xs font-medium text-gray-400 mb-3 tracking-wide">您的手鍊設計預覽 (最多 6 顆)</div>
-            
-            <div id="bracelet-slots" class="flex items-center justify-center min-h-[55px]">
-                <!-- 動態生成 -->
-            </div>
+                <div class="text-xs font-medium text-gray-400 mb-3 tracking-wide">您的手鍊設計預覽 (最多 8 顆)</div>
+    
+    <div class="w-full overflow-x-auto pb-2">
+        <div id="bracelet-slots" class="flex items-center justify-start sm:justify-center min-h-[55px] gap-1 px-1 min-w-max">
+            <!-- 動態生成 -->
+        </div>
+    </div>
+
             <div class="w-full mt-6 mb-4">
                 <input type="text" id="user-note" placeholder="如有其他需求請在此備註 (選填)" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 transition-colors">
             </div>
@@ -191,7 +194,7 @@
             const container = document.getElementById('bracelet-slots');
             let slotsHTML = '';
 
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 8; i++) {
                 if (i < bracelet.length) {
                     const charm = bracelet[i];
                     slotsHTML += `
@@ -215,8 +218,8 @@
         }
 
         function addCharm(charmId) {
-            if (bracelet.length >= 6) {
-                showToast('最多只能排 6 顆模塊喔！');
+            if (bracelet.length >= 8) {
+                showToast('最多只能排8顆模塊哦！');
                 return;
             }
             const charm = charms.find(c => c.id === charmId);
@@ -283,11 +286,12 @@
             ctx.stroke();
 
             // 4. 繪製手鍊模塊
-            const charmWidth = 96;
-            const charmHeight = 78;
-            const totalWidth = 6 * charmWidth;
-            const startX = (800 - totalWidth) / 2;
-            const startY = 340 + (160 - charmHeight) / 2;
+            // 動態計算寬度，確保 1~8 顆都能完美塞進圖中並置中
+const charmWidth = Math.min(80, 560 / Math.max(bracelet.length, 1)); 
+const charmHeight = 78;
+const totalWidth = bracelet.length * charmWidth;
+const startX = (800 - totalWidth) / 2;
+const startY = 340 + (160 - charmHeight) / 2;
 
             let loadedImages = 0;
             const imgObjects = [];
