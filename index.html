@@ -242,14 +242,6 @@
                     // 1. 抓取客人在首頁輸入的備註文字
         const noteText = document.getElementById('user-note').value;
 
-        // 2. 把文字放進彈出視窗的空位裡 (如果有寫字才加「備註：」，沒寫就清空)
-        const noteDisplay = document.getElementById('display-user-note');
-        if (noteText.trim() !== "") {
-            noteDisplay.innerText = "備註：" + noteText;
-        } else {
-            noteDisplay.innerText = "";
-        }
-
             const canvas = document.createElement('canvas');
             canvas.width = 800;
             canvas.height = 800;
@@ -268,6 +260,15 @@
             ctx.fillStyle = '#9CA3AF';
             ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.fillText("CUSTOM CHARM BRACELET", 400, 280);
+
+                    // ✨ 把備註畫進粉紅色圖片裡 ✨
+            if (noteText.trim() !== "") {
+            ctx.fillStyle = '#4B5563'; // 設定字體顏色 (深灰色)
+            ctx.font = '28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'; // 設定字體大小
+            ctx.textAlign = 'center';  // 文字置中
+            ctx.fillText("備註：" + noteText, 400, 720); // 畫在圖片正下方 (X軸400是正中間, Y軸720是偏下方的位置)
+            }
+
 
             // 3. 白色卡片背景
             ctx.fillStyle = '#FFFFFF';
