@@ -402,9 +402,9 @@
                 // 水平置中
                 const drawX = x - (drawW - charmWidth) / 2;
                 
-                // ✨ 透過 item.offsetY (或預設向下壓 4px) 精準控制設計圖上的頂部對齊位置！
-                // 數字越大代表在設計圖上越往下移（預設 +4 剛好補足偏高的落差）
-                const canvasOffsetY = item.offsetY !== undefined ? item.offsetY : 8; 
+                // 頂部對齊位置
+                // 數字越大代表在設計圖上越往下移）
+                const canvasOffsetY = item.offsetY !== undefined ? item.offsetY : 10; 
                 const drawY = y + canvasOffsetY; 
 
                 ctx.drawImage(img, drawX, drawY, drawW, drawH);
@@ -443,28 +443,6 @@
     document.getElementById('result-modal').classList.remove('hidden');
     document.getElementById('result-modal').classList.add('flex');
 }       
-
-        function closeModal() {
-            document.getElementById('result-modal').classList.remove('flex');
-            document.getElementById('result-modal').classList.add('hidden');
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.innerText = message;
-            toast.classList.remove('opacity-0', 'pointer-events-none');
-            toast.classList.add('opacity-100');
-            setTimeout(() => {
-                toast.classList.remove('opacity-100');
-                toast.classList.add('opacity-0', 'pointer-events-none');
-            }, 2500);
-        }
-
-        window.onload = init;
-    </script>
-</body>
-</html>
-       
 
         function closeModal() {
             document.getElementById('result-modal').classList.remove('flex');
