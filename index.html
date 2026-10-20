@@ -244,17 +244,19 @@
             const charm = bracelet[i];
             const isC6 = charm.categoryId === 'c6'; // 判斷是否為吊墜
 
-            // 1. 吊墜容器：維持 50x40px，允許 overflow 讓吊飾向下垂掛
-            const containerStyle = isC6 
-                ? 'w-[50px] h-[40px] bg-white flex items-start justify-center cursor-pointer relative z-20 overflow-visible' 
-                : 'w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer overflow-hidden';
-
-            // 2. 吊墜圖片：如果資料庫有設定 scale 就用 scale，沒有就預設放大 120% 抵銷圖檔留白
-            const scale = charm.scale || 120;
+            const scale = charm.scale || 148;
             const offsetY = charm.offsetY || 0;
 
+            // 1. 統一所有格子的外框，避免第一個格子被 border-2 擠壓變小
+            const borderStyle = i === 0 ? 'rounded-l-md border-l-2' : '';
+            
+            const containerStyle = isC6 
+                ? `w-[50px] h-[40px] bg-white flex items-start justify-center cursor-pointer relative z-20 overflow-visible border-t-2 border-b-2 border-r-2 border-gray-300 ${borderStyle}` 
+                : `w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer overflow-hidden relative z-10 border-t-2 border-b-2 border-r-2 border-gray-300 ${borderStyle}`;
+
+            // 2. 吊墜圖片改用絕對定位與正確比例，讓扣頭不管在第幾個格子都一樣大
             const imgStyle = isC6 
-                ? 'max-w-none h-auto absolute left-1/2 -translate-x-1/2 pointer-events-none' 
+                ? 'max-w-none h-auto absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none' 
                 : 'w-full h-full object-cover';
 
             const inlineStyle = isC6 
@@ -263,7 +265,7 @@
 
             slotsHTML += `
                 <div onclick="removeCharm(${i})" title="點擊移除" 
-                    class="${containerStyle} ${i === 0 ? 'border-2 border-gray-300 rounded-l-md' : 'border-t-2 border-b-2 border-r-2 border-gray-300'}"
+                    class="${containerStyle}"
                     style="box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
                     <img src="${charm.src}" alt="${charm.name}" class="${imgStyle}" style="${inlineStyle}" />
                 </div>
@@ -394,51 +396,66 @@
             });
         }
 
-                function drawCanvasFinal(ctx, canvas, startX, startY, charmWidth, charmHeight, imgObjects) {
-            bracelet.forEach((item, index) => {
-                const x = startX + (index * charmWidth);
-                const y = startY;
+        function drawCanvasFinal(ctx, canvas, startX, startY, charmWidth, charmHeight, imgObjects) {
+    bracelet.forEach((item, index) => {
+        const x = startX + (index * charmWidth);
+        const y = startY;
+        const isC6 = item.categoryId === 'c6'; // 判斷是否為吊墜
 
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(x, y, charmWidth, charmHeight);
+        // 1. 畫格子白底
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(x, y, charmWidth, charmHeight);
 
-                if (imgObjects[index]) {
-                    const img = imgObjects[index];
-                    
-                    // ✨ 新增這幾行：計算圖片本身的寬高比與格子的比例
-                    const imgRatio = img.width / img.height;
-                    const boxRatio = charmWidth / charmHeight;
+        if (imgObjects[index]) {
+            const img = imgObjects[index];
 
-                    let drawW = charmWidth;
-                    let drawH = charmHeight;
-                    let drawX = x;
-                    let drawY = y;
+            if (isC6) {
+                // ✨ 讀取商品資料中的 scale (若沒設定則預設 120%)，並轉為小數倍率
+                const scale = (item.scale || 120) / 100;
+                const offsetY = item.offsetY || 0;
 
-                    // ✨ 新增這幾行：自動判斷並等比例縮放、置中，防止壓扁
-                    if (imgRatio > boxRatio) {
-                        drawH = charmWidth / imgRatio;
-                        drawY = y + (charmHeight - drawH) / 2;
-                    } else {
-                        drawW = charmHeight * imgRatio;
-                        drawX = x + (charmWidth - drawW) / 2;
-                    }
+                // ✨ 根據專屬 scale 動態計算繪製寬高與水平置中位置
+                const drawW = charmWidth * scale;
+                const drawH = drawW * (img.height / img.width);
+                const drawX = x - (drawW - charmWidth) / 2; // 水平置中
+                const drawY = y + offsetY; // 頂部貼齊邊框 (可透過 offsetY 微調)
 
-                    // ✨ 帶入計算好的等比例尺寸來繪製
-                    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                ctx.drawImage(img, drawX, drawY, drawW, drawH);
+            } else {
+                // 一般模塊等比例縮放居中
+                const imgRatio = img.width / img.height;
+                const boxRatio = charmWidth / charmHeight;
+
+                let drawW = charmWidth;
+                let drawH = charmHeight;
+                let drawX = x;
+                let drawY = y;
+
+                if (imgRatio > boxRatio) {
+                    drawH = charmWidth / imgRatio;
+                    drawY = y + (charmHeight - drawH) / 2;
+                } else {
+                    drawW = charmHeight * imgRatio;
+                    drawX = x + (charmWidth - drawW) / 2;
                 }
 
-                ctx.strokeStyle = '#D1D5DB';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x, y, charmWidth, charmHeight);
-            });
-
-            const dataURL = canvas.toDataURL('image/png');
-            const outputContainer = document.getElementById('image-output-container');
-            outputContainer.innerHTML = `<img src="${dataURL}" alt="專屬設計圖" class="w-full h-full object-contain rounded-2xl" />`;
-
-            document.getElementById('result-modal').classList.remove('hidden');
-            document.getElementById('result-modal').classList.add('flex');
+                ctx.drawImage(img, drawX, drawY, drawW, drawH);
+            }
         }
+
+        // 2. 畫灰色模塊外框線
+        ctx.strokeStyle = '#D1D5DB';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, charmWidth, charmHeight);
+    });
+
+    const dataURL = canvas.toDataURL('image/png');
+    const outputContainer = document.getElementById('image-output-container');
+    outputContainer.innerHTML = `<img src="${dataURL}" alt="專屬設計圖" class="w-full h-full object-contain rounded-2xl" />`;
+
+    document.getElementById('result-modal').classList.remove('hidden');
+    document.getElementById('result-modal').classList.add('flex');
+}        
 
         function closeModal() {
             document.getElementById('result-modal').classList.remove('flex');
