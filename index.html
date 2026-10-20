@@ -386,7 +386,7 @@
         const y = startY;
         const isC6 = item.categoryId === 'c6';
 
-        // 1. 填滿格子白底
+        // 1. 畫灰色模塊外框與白底 (所有模塊外框 100% 同寬同高)
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(x, y, charmWidth, charmHeight);
 
@@ -394,28 +394,54 @@
             const img = imgObjects[index];
 
             if (isC6) {
-                // ✨ 關鍵修正：
-                // 1. 吊墜讀取自訂 scale (例如 130%)
+                // ✨ 吊墜模塊處理：
                 const scale = (item.scale || 100) / 100;
-                
-                // 2. 計算繪製尺寸
-                const drawW = charmWidth * scale;
-                const drawH = drawW * (img.height / img.width);
-                const drawX = x - (drawW - charmWidth) / 2; // 水平置中
-                
-                // 3. 強制將頂部的「金屬邊框區域」向上平移切齊 Y 軸，讓金屬上緣與左右模塊 100% 對齊！
-                // (可透過 offsetY 進行 ± 像素微調)
-                const offsetY = item.offsetY || -2; 
-                const drawY = y + offsetY;
+                const offsetY = item.offsetY || 0; // 自訂 Y 軸位移 (預設 0)
+
+                if (scale > 1) {
+                    // 先把「頂部模塊底座」1:1 滿版貼齊金屬框 (不變形)
+                    ctx.drawImage(img, x, y + offsetY, charmWidth, charmHeight);
+
+                    // 再把「下半部蝴蝶結」獨立放大繪製在底下
+                    const cropY = img.height * 0.35;
+                    const cropH = img.height * 0.65;
+                    
+                    const drawW = charmWidth * scale;
+                    const drawH = (charmHeight * 0.65) * scale;
+                    const drawX = x - (drawW - charmWidth) / 2; // 置中對齊
+                    const drawY = y + (charmHeight * 0.35) + offsetY;
+
+                    ctx.drawImage(
+                        img, 
+                        0, cropY, img.width, cropH, 
+                        drawX, drawY, drawW, drawH
+                    );
+                } else {
+                    ctx.drawImage(img, x, y + offsetY, charmWidth, charmHeight);
+                }
+            } else {
+                // ✨ 普通模塊處理：維持「等比例縮放居中」，絕不變形壓縮！
+                const imgRatio = img.width / img.height;
+                const boxRatio = charmWidth / charmHeight;
+
+                let drawW = charmWidth;
+                let drawH = charmHeight;
+                let drawX = x;
+                let drawY = y;
+
+                if (imgRatio > boxRatio) {
+                    drawH = charmWidth / imgRatio;
+                    drawY = y + (charmHeight - drawH) / 2;
+                } else {
+                    drawW = charmHeight * imgRatio;
+                    drawX = x + (charmWidth - drawW) / 2;
+                }
 
                 ctx.drawImage(img, drawX, drawY, drawW, drawH);
-            } else {
-                // 一般模塊滿版繪製
-                ctx.drawImage(img, x, y, charmWidth, charmHeight);
             }
         }
 
-        // 2. 畫灰色模塊外框線 (讓所有模塊的金屬框線連成一條完美直線)
+        // 2. 畫灰色模塊外框線 (連成一條水平直線)
         ctx.strokeStyle = '#D1D5DB';
         ctx.lineWidth = 2.5;
         ctx.strokeRect(x, y, charmWidth, charmHeight);
