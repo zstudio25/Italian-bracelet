@@ -244,14 +244,14 @@
             const charm = bracelet[i];
             const isC6 = charm.categoryId === 'c6'; // 判斷是否為吊墜
 
-            // 吊墜不要加 overflow-hidden，這樣蝴蝶結才能自然垂下來
+            // 1. 吊墜容器：維持 50x40px 不變，但移除 overflow-hidden，讓蝴蝶結往下垂顯
             const containerStyle = isC6 
                 ? 'w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer relative z-20' 
                 : 'w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer overflow-hidden';
 
-            // 吊墜採用 contain 保持原圖比例，並微調高度與往下位移對齊
+            // 2. 吊墜圖片：寬度精準設定為 w-full (50px)，高度放開 (h-auto)，預設從頂部對齊 (object-top)
             const imgStyle = isC6 
-                ? 'w-full h-[60px] object-contain translate-y-2' 
+                ? 'w-full h-auto max-w-none object-top translate-y-[2px]' 
                 : 'w-full h-full object-cover';
 
             slotsHTML += `
