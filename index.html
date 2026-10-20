@@ -113,7 +113,8 @@
             { id: 'c5', name: '銀色' },
             { id: 'c2', name: '字母' },
             { id: 'c1', name: '數字' },
-            { id: 'c3', name: '寶石' }
+            { id: 'c3', name: '寶石' },
+            { id: 'c6', name: '吊墜' },
         ];
 
         // 這裡使用真實圖片的 Base64 或線上圖片範例（此處以高畫質精美圖標示範，你之後可以換成你的商品去背圖 Base64）
@@ -210,15 +211,15 @@
     const filteredCharms = charms.filter(c => c.categoryId === currentCategory);
 
     container.innerHTML = filteredCharms.map(charm => {
-        // 判斷是否為 C5 吊墜系列（請根據妳資料中 C5 的 categoryId 或判斷方式調整）
-        const isC5 = charm.categoryId === 'c5'; // 如果妳的分類代號是別的可以對應修改
+        // 判斷是否為 C6 吊墜系列（請根據妳資料中 C6 的 categoryId 或判斷方式調整）
+        const isC6 = charm.categoryId === 'c6'; // 如果妳的分類代號是別的可以對應修改
 
-        // 如果是 C5 吊墜，外框改得比較高且拿掉 overflow-hidden 避免被切掉；一般模塊維持原本大小
-        const wrapperClass = isC5 
+        // 如果是 C6 吊墜，外框改得比較高且拿掉 overflow-hidden 避免被切掉；一般模塊維持原本大小
+        const wrapperClass = isC6 
             ? "w-10 h-12 bg-white border border-gray-200 flex items-center justify-center relative z-10" 
             : "w-10 h-8 rounded overflow-hidden bg-white border border-gray-200 flex items-center justify-center";
             
-        const imgClass = isC5 
+        const imgClass = isC6 
             ? "w-8 h-12 object-contain translate-y-2" // 吊墜向下微調對齊
             : "w-full h-full object-cover";
 
