@@ -349,9 +349,6 @@
             ctx.fillStyle = '#FFFFFF';
             ctx.roundRect(cardX, cardY, cardWidth, 250, 28);
             ctx.fill();
-            ctx.strokeStyle = '#FCE7F0';
-            ctx.lineWidth = 3;
-            ctx.stroke();
 
             const startX = (800 - totalWidth) / 2;
             const startY = cardY + (250 - charmHeight) / 2;
@@ -431,7 +428,7 @@
         }
 
         // 2. 畫模塊外框線
-        ctx.strokeStyle = 'transparent';
+        ctx.strokeStyle = '#D1D5DB';
         ctx.lineWidth = 2.5;
         ctx.strokeRect(x, y, charmWidth, charmHeight);
     });
