@@ -404,7 +404,7 @@
                 
                 // ✨ 透過 item.offsetY (或預設向下壓 4px) 精準控制設計圖上的頂部對齊位置！
                 // 數字越大代表在設計圖上越往下移（預設 +4 剛好補足偏高的落差）
-                const canvasOffsetY = item.offsetY !== undefined ? item.offsetY : 6; 
+                const canvasOffsetY = item.offsetY !== undefined ? item.offsetY : 8; 
                 const drawY = y + canvasOffsetY; 
 
                 ctx.drawImage(img, drawX, drawY, drawW, drawH);
