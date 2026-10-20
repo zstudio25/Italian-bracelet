@@ -386,7 +386,7 @@
         const y = startY;
         const isC6 = item.categoryId === 'c6';
 
-        // 1. 畫灰色模塊外框與白底 (所有模塊外框 100% 同寬同高)
+        // 1. 畫每個模塊的白底與灰色金屬外框 (確保每個模塊 100% 同寬同高)
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(x, y, charmWidth, charmHeight);
 
@@ -394,33 +394,21 @@
             const img = imgObjects[index];
 
             if (isC6) {
-                // ✨ 吊墜模塊處理：
+                // ✨ 吊墜精準對齊邏輯：
+                // 1. 讀取 scale (如 125~130%)，計算放大後的寬度與高度
                 const scale = (item.scale || 100) / 100;
-                const offsetY = item.offsetY || 0; // 自訂 Y 軸位移 (預設 0)
+                const drawW = charmWidth * scale;
+                const drawH = drawW * (img.height / img.width);
+                
+                // 2. 水平置中，Y 軸精準對齊模塊頂部 (可由 offsetY 微調 ± 像素)
+                const offsetY = item.offsetY || 0;
+                const drawX = x - (drawW - charmWidth) / 2;
+                const drawY = y + offsetY; 
 
-                if (scale > 1) {
-                    // 先把「頂部模塊底座」1:1 滿版貼齊金屬框 (不變形)
-                    ctx.drawImage(img, x, y + offsetY, charmWidth, charmHeight);
-
-                    // 再把「下半部蝴蝶結」獨立放大繪製在底下
-                    const cropY = img.height * 0.35;
-                    const cropH = img.height * 0.65;
-                    
-                    const drawW = charmWidth * scale;
-                    const drawH = (charmHeight * 0.65) * scale;
-                    const drawX = x - (drawW - charmWidth) / 2; // 置中對齊
-                    const drawY = y + (charmHeight * 0.35) + offsetY;
-
-                    ctx.drawImage(
-                        img, 
-                        0, cropY, img.width, cropH, 
-                        drawX, drawY, drawW, drawH
-                    );
-                } else {
-                    ctx.drawImage(img, x, y + offsetY, charmWidth, charmHeight);
-                }
+                // 3. 一次性完整繪製，絕不重疊、絕不重影！
+                ctx.drawImage(img, drawX, drawY, drawW, drawH);
             } else {
-                // ✨ 普通模塊處理：維持「等比例縮放居中」，絕不變形壓縮！
+                // 一般模塊等比例居中，保持不變形
                 const imgRatio = img.width / img.height;
                 const boxRatio = charmWidth / charmHeight;
 
@@ -441,7 +429,7 @@
             }
         }
 
-        // 2. 畫灰色模塊外框線 (連成一條水平直線)
+        // 2. 畫灰色模塊外框線 (讓所有模塊的金屬上、下框線完美排在一條水平線上)
         ctx.strokeStyle = '#D1D5DB';
         ctx.lineWidth = 2.5;
         ctx.strokeRect(x, y, charmWidth, charmHeight);
@@ -453,7 +441,7 @@
 
     document.getElementById('result-modal').classList.remove('hidden');
     document.getElementById('result-modal').classList.add('flex');
-}        
+}       
 
         function closeModal() {
             document.getElementById('result-modal').classList.remove('flex');
