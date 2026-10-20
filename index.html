@@ -206,19 +206,33 @@
         }
 
         function renderCharms() {
-            const container = document.getElementById('charms-container');
-            const filteredCharms = charms.filter(c => c.categoryId === currentCategory);
+    const container = document.getElementById('charms-container');
+    const filteredCharms = charms.filter(c => c.categoryId === currentCategory);
 
-            container.innerHTML = filteredCharms.map(charm => `
-                <button onclick="addCharm(${charm.id})" 
-                    class="flex flex-col items-center justify-center p-1.5 bg-gray-50 hover:bg-pink-50 active:scale-95 rounded-xl border border-gray-100 transition-all h-[68px]">
-                    <div class="w-10 h-8 rounded overflow-hidden bg-white border border-gray-200 flex items-center justify-center">
-                        <img src="${charm.src}" alt="${charm.name}" class="w-full h-full object-cover" />
-                    </div>
-                    <span class="text-[10px] text-gray-500 mt-1">${charm.name}</span>
-                </button>
-            `).join('');
-        }
+    container.innerHTML = filteredCharms.map(charm => {
+        // 判斷是否為 C5 吊墜系列（請根據妳資料中 C5 的 categoryId 或判斷方式調整）
+        const isC5 = charm.categoryId === 'c5'; // 如果妳的分類代號是別的可以對應修改
+
+        // 如果是 C5 吊墜，外框改得比較高且拿掉 overflow-hidden 避免被切掉；一般模塊維持原本大小
+        const wrapperClass = isC5 
+            ? "w-10 h-12 bg-white border border-gray-200 flex items-center justify-center relative z-10" 
+            : "w-10 h-8 rounded overflow-hidden bg-white border border-gray-200 flex items-center justify-center";
+            
+        const imgClass = isC5 
+            ? "w-8 h-12 object-contain translate-y-2" // 吊墜向下微調對齊
+            : "w-full h-full object-cover";
+
+        return `
+            <button onclick="addCharm(${charm.id})"
+                class="flex flex-col items-center justify-center p-1.5 bg-gray-50 hover:bg-pink-50 active:scale-95 rounded-xl border border-gray-100 transition-all">
+                <div class="${wrapperClass}">
+                    <img src="${charm.src}" alt="${charm.name}" class="${imgClass}" />
+                </div>
+                <span class="text-[10px] text-gray-500 mt-1">${charm.name}</span>
+            </button>
+        `;
+    }).join('');
+}
 
         function renderBracelet() {
             const container = document.getElementById('bracelet-slots');
