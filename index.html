@@ -6,14 +6,14 @@
     <title>Z's 粒子 - 設計你的義大利模塊手鍊</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-                body {
+        body {
             background: url('https://lh3.googleusercontent.com/d/1BS4UZmWKs9SuKyzeFau5vk27NXqw0Fy7') no-repeat center center fixed;
             background-size: cover;
             background-color: #1A2536;
 
-            min-height: 100vh
+            min-height: 100vh;
             margin: 0;
-                    
+            
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             -webkit-user-select: none;
             user-select: none;
@@ -33,7 +33,7 @@
         }
     </style>
 </head>
-    <body class="flex flex-col min-h-screen items-center justify-start gap-4 p-4">
+<body class="flex flex-col min-h-screen items-center justify-start gap-4 p-4">
 
     <header class="text-center my-3">
         <h1 class="text-2xl font-bold tracking-wider text-white">Z's</h1>
@@ -44,13 +44,13 @@
 
         <!-- 手鍊展示台 -->
         <section class="flex flex-col items-center bg-white p-4 rounded-2xl shadow-inner">
-                <div class="text-xs font-medium text-gray-400 mb-3 tracking-wide">手鍊設計預覽 (請選擇6～8個模塊)</div>
+            <div class="text-xs font-medium text-gray-400 mb-3 tracking-wide">手鍊設計預覽 (請選擇6～8個模塊)</div>
     
-    <div class="w-full overflow-x-auto pb-10 pt-1">
-        <div id="bracelet-slots" class="flex items-center justify-start sm:justify-center min-h-[55px] gap-1 px-1 min-w-max">
-            <!-- 動態生成 -->
-        </div>
-    </div>
+            <div class="w-full overflow-x-auto pb-10 pt-1">
+                <div id="bracelet-slots" class="flex items-center justify-start sm:justify-center min-h-[55px] gap-1 px-1 min-w-max">
+                    <!-- 動態生成 -->
+                </div>
+            </div>
 
             <div class="w-full mt-8 mb-4">
                 <input type="text" id="user-note" placeholder="選擇字母模塊請在此備註想要的字母" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-xs text-gray-700 focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 transition-colors">
@@ -178,7 +178,7 @@
             { id: 90, categoryId: 'c5', name: '浮雕花', type: 'img', src: 'https://lh3.googleusercontent.com/d/1FTJ7vMA9W4ynEl_lq_KhMj_mIQEOtdax' },
             { id: 91, categoryId: 'c5', name: '浮雕海豚', type: 'img', src: 'https://lh3.googleusercontent.com/d/1MiV5j9fw-q3VZempXVALgFbDssR_Aq12' },
             { id: 92, categoryId: 'c5', name: '浮雕爪印', type: 'img', src: 'https://lh3.googleusercontent.com/d/1d_byOB-5X7MELT_pfjjsuaTixWV-AEu4' },
-            { id: 100, categoryId: 'c6', name: '蝴蝶結', type: 'img', src: 'https://lh3.googleusercontent.com/d/15z6749ZY-JZIJn0UtECWfxpr807SfMUh', scale: 125 }
+            { id: 100, categoryId: 'c6', name: '蝴蝶結', type: 'img', src: 'https://lh3.googleusercontent.com/d/15z6749ZY-JZIJn0UtECWfxpr807SfMUh', scale: 148 }
         ];
 
         let bracelet = [];
@@ -207,81 +207,76 @@
         }
 
         function renderCharms() {
-    const container = document.getElementById('charms-container');
-    const filteredCharms = charms.filter(c => c.categoryId === currentCategory);
+            const container = document.getElementById('charms-container');
+            const filteredCharms = charms.filter(c => c.categoryId === currentCategory);
 
-    container.innerHTML = filteredCharms.map(charm => {
-        // 判斷是否為 C6 吊墜系列
-        const isC6 = charm.categoryId === 'c6';
+            container.innerHTML = filteredCharms.map(charm => {
+                const isC6 = charm.categoryId === 'c6';
+                const wrapperClass = isC6 
+                    ? "w-10 h-12 bg-white border border-gray-200 flex items-center justify-center relative rounded z-10" 
+                    : "w-10 h-8 rounded overflow-hidden bg-white border border-gray-200 flex items-center justify-center";
+                    
+                const imgClass = isC6 
+                    ? "w-8 h-10 object-contain translate-y-1" 
+                    : "w-full h-full object-cover";
 
-        // 吊墜系列微調容器與高度
-        const wrapperClass = isC6 
-            ? "w-10 h-12 bg-white border border-gray-200 flex items-center justify-center relative rounded z-10" 
-            : "w-10 h-8 rounded overflow-hidden bg-white border border-gray-200 flex items-center justify-center";
-            
-        const imgClass = isC6 
-            ? "w-8 h-10 object-contain translate-y-1" // 調整適當高度避免切到
-            : "w-full h-full object-cover";
-
-        return `
-            <button onclick="addCharm(${charm.id})"
-                class="flex flex-col items-center justify-between p-1.5 bg-gray-50 hover:bg-pink-50 active:scale-95 rounded-xl border border-gray-100 transition-all min-h-[75px]">
-                <div class="${wrapperClass}">
-                    <img src="${charm.src}" alt="${charm.name}" class="${imgClass}" />
-                </div>
-                <span class="text-[10px] text-gray-500 mt-1">${charm.name}</span>
-            </button>
-        `;
-    }).join('');
-}
+                return `
+                    <button onclick="addCharm(${charm.id})"
+                        class="flex flex-col items-center justify-between p-1.5 bg-gray-50 hover:bg-pink-50 active:scale-95 rounded-xl border border-gray-100 transition-all min-h-[75px]">
+                        <div class="${wrapperClass}">
+                            <img src="${charm.src}" alt="${charm.name}" class="${imgClass}" />
+                        </div>
+                        <span class="text-[10px] text-gray-500 mt-1">${charm.name}</span>
+                    </button>
+                `;
+            }).join('');
+        }
 
         function renderBracelet() {
-    const container = document.getElementById('bracelet-slots');
-    let slotsHTML = '';
+            const container = document.getElementById('bracelet-slots');
+            let slotsHTML = '';
 
-    for (let i = 0; i < 8; i++) {
-        if (i < bracelet.length) {
-            const charm = bracelet[i];
-            const isC6 = charm.categoryId === 'c6'; // 判斷是否為吊墜
+            for (let i = 0; i < 8; i++) {
+                if (i < bracelet.length) {
+                    const charm = bracelet[i];
+                    const isC6 = charm.categoryId === 'c6';
 
-            const scale = charm.scale || 148;
-            const offsetY = charm.offsetY || 0;
+                    const scale = charm.scale || 148;
+                    const offsetY = charm.offsetY || 0;
 
-            // 1. 統一所有格子的外框，避免第一個格子被 border-2 擠壓變小
-            const borderStyle = i === 0 ? 'rounded-l-md border-l-2' : '';
-            
-            const containerStyle = isC6 
-                ? `w-[50px] h-[40px] bg-white flex items-start justify-center cursor-pointer relative z-20 overflow-visible border-t-2 border-b-2 border-r-2 border-gray-300 ${borderStyle}` 
-                : `w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer overflow-hidden relative z-10 border-t-2 border-b-2 border-r-2 border-gray-300 ${borderStyle}`;
+                    const containerStyle = isC6 
+                        ? 'w-[50px] h-[40px] bg-white flex items-start justify-center cursor-pointer relative z-20 overflow-visible border-t-2 border-b-2 border-r-2 border-gray-300' 
+                        : 'w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer overflow-hidden relative z-10 border-t-2 border-b-2 border-r-2 border-gray-300';
 
-            // 2. 吊墜圖片改用絕對定位與正確比例，讓扣頭不管在第幾個格子都一樣大
-            const imgStyle = isC6 
-                ? 'max-w-none h-auto absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none' 
-                : 'w-full h-full object-cover';
+                    const firstSlotClass = i === 0 ? 'rounded-l-md border-l-2' : '';
 
-            const inlineStyle = isC6 
-                ? `width: ${scale}%; top: ${offsetY}px;` 
-                : '';
+                    const imgStyle = isC6 
+                        ? 'max-w-none h-auto absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none' 
+                        : 'w-full h-full object-cover';
 
-            slotsHTML += `
-                <div onclick="removeCharm(${i})" title="點擊移除" 
-                    class="${containerStyle}"
-                    style="box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
-                    <img src="${charm.src}" alt="${charm.name}" class="${imgStyle}" style="${inlineStyle}" />
-                </div>
-            `;
-        } else {
-            slotsHTML += `
-                <div class="w-[50px] h-[40px] border border-dashed border-gray-300 bg-gray-50/50 flex items-center justify-center text-gray-200 text-xs
-                    ${i === 0 ? 'rounded-l-md border-l' : '-ml-[1px]'}">
-                    ·
-                </div>
-            `;
+                    const inlineStyle = isC6 
+                        ? `width: ${scale}%; top: ${offsetY}px;` 
+                        : '';
+
+                    slotsHTML += `
+                        <div onclick="removeCharm(${i})" title="點擊移除" 
+                            class="${containerStyle} ${firstSlotClass}"
+                            style="box-sizing: border-box; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+                            <img src="${charm.src}" alt="${charm.name}" class="${imgStyle}" style="${inlineStyle}" />
+                        </div>
+                    `;
+                } else {
+                    slotsHTML += `
+                        <div class="w-[50px] h-[40px] border border-dashed border-gray-300 bg-gray-50/50 flex items-center justify-center text-gray-200 text-xs box-border
+                            ${i === 0 ? 'rounded-l-md border-l' : '-ml-[1px]'}">
+                            ·
+                        </div>
+                    `;
+                }
+            }
+            container.innerHTML = slotsHTML;
         }
-    }
-    container.innerHTML = slotsHTML;
-}
-        
+
         function addCharm(charmId) {
             if (bracelet.length >= 8) {
                 showToast('最多只能選8個模塊哦！');
@@ -305,25 +300,24 @@
             showToast('已清空手鍊');
         }
 
-        // 圖片生成引擎 (支援真實圖片繪製)
+        // 圖片生成引擎 (修復8個模塊自適應放大的版本)
         function generateDesignImage() {
             if (bracelet.length === 0) {
                 showToast('請至少選擇一個模塊再生成設計圖！');
                 return;
             }
-                    // 1. 抓取客人在首頁輸入的備註文字
-        const noteText = document.getElementById('user-note').value;
+            const noteText = document.getElementById('user-note').value;
 
             const canvas = document.createElement('canvas');
             canvas.width = 800;
             canvas.height = 800;
             const ctx = canvas.getContext('2d');
 
-            // 1. 粉紅底色
+            // 1. 米粉色底色
             ctx.fillStyle = '#fdfdf7';
             ctx.fillRect(0, 0, 800, 800);
 
-            // 2. 標題
+            // 2. 標題與副標題
             ctx.fillStyle = '#1F2937';
             ctx.font = 'bold 42px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.textAlign = 'center';
@@ -333,48 +327,37 @@
             ctx.font = '18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
             ctx.fillText("Design Your Own Bracelet.", 400, 150);
 
-                    // ✨ 把備註畫進粉紅色圖片裡 ✨
+            // 3. 備註文字
             if (noteText.trim() !== "") {
-            ctx.fillStyle = '#4B5563'; // 設定字體顏色 (深灰色)
-            ctx.font = '28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'; // 設定字體大小
-            ctx.textAlign = 'center';  // 文字置中
-            ctx.fillText("備註：" + noteText, 400, 720); // 畫在圖片正下方 (X軸400是正中間, Y軸720是偏下方的位置)
+                ctx.fillStyle = '#4B5563';
+                ctx.font = '28px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText("備註：" + noteText, 400, 720);
             }
 
-
-            // 3. 白色卡片背景
-            ctx.fillStyle = '#FFFFFF';
-            ctx.roundRect(100, 340, 600, 160, 24);
-            ctx.fill();
-            ctx.strokeStyle = '#FCE7F0';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-                        // 4. 繪製手鍊模塊 (固定每個模塊的寬高比，不讓它變形壓縮)
-            const charmWidth = 110;  // 固定模塊寬度，維持完美比例
-            const charmHeight = 122;
-            const totalWidth = bracelet.length * charmWidth;
+            // 4. 動態計算模塊尺寸，確保滿 8 個時完美容納，不被切掉
+            const count = bracelet.length;
+            const charmWidth = count > 6 ? 82 : (count > 4 ? 92 : 110); 
+            const charmHeight = Math.round(charmWidth * (122 / 110)); 
+            const totalWidth = count * charmWidth;
             
-            // 讓白色卡片背景隨著模塊數量自動加寬，左右保留漂亮邊距
-            const cardWidth = Math.max(680, totalWidth + 80); 
+            const cardWidth = Math.min(740, totalWidth + 60); 
             const cardX = (800 - cardWidth) / 2;
             const cardY = 270;
 
-            // 重新畫出合適大小的白色卡片
+            // 繪製大白色卡片
             ctx.fillStyle = '#FFFFFF';
-            ctx.roundRect(cardX, 340, cardWidth, 160, 24);
+            ctx.roundRect(cardX, cardY, cardWidth, 250, 28);
             ctx.fill();
             ctx.strokeStyle = '#FCE7F0';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 3;
             ctx.stroke();
 
             const startX = (800 - totalWidth) / 2;
-            const startY = 340 + (160 - charmHeight) / 2;
+            const startY = cardY + (250 - charmHeight) / 2;
 
             let loadedImages = 0;
             const imgObjects = [];
-
-            if (bracelet.length === 0) return;
 
             bracelet.forEach((item, index) => {
                 const img = new Image();
@@ -398,65 +381,60 @@
         }
 
         function drawCanvasFinal(ctx, canvas, startX, startY, charmWidth, charmHeight, imgObjects) {
-    bracelet.forEach((item, index) => {
-        const x = startX + (index * charmWidth);
-        const y = startY;
-        const isC6 = item.categoryId === 'c6'; // 判斷是否為吊墜
+            bracelet.forEach((item, index) => {
+                const x = startX + (index * charmWidth);
+                const y = startY;
+                const isC6 = item.categoryId === 'c6';
 
-        // 1. 畫格子白底
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(x, y, charmWidth, charmHeight);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(x, y, charmWidth, charmHeight);
 
-        if (imgObjects[index]) {
-            const img = imgObjects[index];
+                if (imgObjects[index]) {
+                    const img = imgObjects[index];
 
-            if (isC6) {
-                // ✨ 讀取商品資料中的 scale (若沒設定則預設 120%)，並轉為小數倍率
-                const scale = (item.scale || 120) / 100;
-                const offsetY = item.offsetY || 0;
+                    if (isC6) {
+                        const scale = (item.scale || 148) / 100;
+                        const offsetY = item.offsetY || 0;
 
-                // ✨ 根據專屬 scale 動態計算繪製寬高與水平置中位置
-                const drawW = charmWidth * scale;
-                const drawH = drawW * (img.height / img.width);
-                const drawX = x - (drawW - charmWidth) / 2; // 水平置中
-                const drawY = y + offsetY; // 頂部貼齊邊框 (可透過 offsetY 微調)
+                        const drawW = charmWidth * scale;
+                        const drawH = drawW * (img.height / img.width);
+                        const drawX = x - (drawW - charmWidth) / 2;
+                        const drawY = y + offsetY;
 
-                ctx.drawImage(img, drawX, drawY, drawW, drawH);
-            } else {
-                // 一般模塊等比例縮放居中
-                const imgRatio = img.width / img.height;
-                const boxRatio = charmWidth / charmHeight;
+                        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                    } else {
+                        const imgRatio = img.width / img.height;
+                        const boxRatio = charmWidth / charmHeight;
 
-                let drawW = charmWidth;
-                let drawH = charmHeight;
-                let drawX = x;
-                let drawY = y;
+                        let drawW = charmWidth;
+                        let drawH = charmHeight;
+                        let drawX = x;
+                        let drawY = y;
 
-                if (imgRatio > boxRatio) {
-                    drawH = charmWidth / imgRatio;
-                    drawY = y + (charmHeight - drawH) / 2;
-                } else {
-                    drawW = charmHeight * imgRatio;
-                    drawX = x + (charmWidth - drawW) / 2;
+                        if (imgRatio > boxRatio) {
+                            drawH = charmWidth / imgRatio;
+                            drawY = y + (charmHeight - drawH) / 2;
+                        } else {
+                            drawW = charmHeight * imgRatio;
+                            drawX = x + (charmWidth - drawW) / 2;
+                        }
+
+                        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+                    }
                 }
 
-                ctx.drawImage(img, drawX, drawY, drawW, drawH);
-            }
-        }
+                ctx.strokeStyle = '#D1D5DB';
+                ctx.lineWidth = 2.5;
+                ctx.strokeRect(x, y, charmWidth, charmHeight);
+            });
 
-        // 2. 畫灰色模塊外框線
-        ctx.strokeStyle = '#D1D5DB';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, charmWidth, charmHeight);
-    });
+            const dataURL = canvas.toDataURL('image/png');
+            const outputContainer = document.getElementById('image-output-container');
+            outputContainer.innerHTML = `<img src="${dataURL}" alt="專屬設計圖" class="w-full h-full object-contain rounded-2xl" />`;
 
-    const dataURL = canvas.toDataURL('image/png');
-    const outputContainer = document.getElementById('image-output-container');
-    outputContainer.innerHTML = `<img src="${dataURL}" alt="專屬設計圖" class="w-full h-full object-contain rounded-2xl" />`;
-
-    document.getElementById('result-modal').classList.remove('hidden');
-    document.getElementById('result-modal').classList.add('flex');
-}        
+            document.getElementById('result-modal').classList.remove('hidden');
+            document.getElementById('result-modal').classList.add('flex');
+        }        
 
         function closeModal() {
             document.getElementById('result-modal').classList.remove('flex');
@@ -478,3 +456,7 @@
     </script>
 </body>
 </html>
+```<ElicitationsGroup>
+<Elicitation value="進行 8 個模塊生成測試">進行 8 個模塊生成測試</Elicitation>
+<Elicitation value="需調整其他細節">需調整其他細節</Elicitation>
+</ElicitationsGroup>
