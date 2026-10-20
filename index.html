@@ -236,32 +236,43 @@
 }
 
         function renderBracelet() {
-            const container = document.getElementById('bracelet-slots');
-            let slotsHTML = '';
+    const container = document.getElementById('bracelet-slots');
+    let slotsHTML = '';
 
-            for (let i = 0; i < 8; i++) {
-                if (i < bracelet.length) {
-                    const charm = bracelet[i];
-                    slotsHTML += `
-                        <div onclick="removeCharm(${i})" title="點擊移除" 
-                            class="w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer hover:opacity-80 transition-all overflow-hidden
-                            ${i === 0 ? 'border-2 border-gray-300 rounded-l-md' : 'border-t-2 border-b-2 border-r-2 border-gray-300'}"
-                            style="box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
-                            <img src="${charm.src}" alt="${charm.name}" class="w-full h-full object-cover" />
-                        </div>
-                    `;
-                } else {
-                    slotsHTML += `
-                        <div class="w-[50px] h-[40px] border border-dashed border-gray-300 bg-gray-50/50 flex items-center justify-center text-gray-200 text-xs
-                            ${i === 0 ? 'rounded-l-md border-l' : '-ml-[1px]'}">
-                            ·
-                        </div>
-                    `;
-                }
-            }
-            container.innerHTML = slotsHTML;
+    for (let i = 0; i < 8; i++) {
+        if (i < bracelet.length) {
+            const charm = bracelet[i];
+            const isC6 = charm.categoryId === 'c6'; // 判斷是否為吊墜
+
+            // 吊墜不要加 overflow-hidden，這樣蝴蝶結才能自然垂下來
+            const containerStyle = isC6 
+                ? 'w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer relative z-20' 
+                : 'w-[50px] h-[40px] bg-white flex items-center justify-center cursor-pointer overflow-hidden';
+
+            // 吊墜採用 contain 保持原圖比例，並微調高度與往下位移對齊
+            const imgStyle = isC6 
+                ? 'w-full h-[60px] object-contain translate-y-2' 
+                : 'w-full h-full object-cover';
+
+            slotsHTML += `
+                <div onclick="removeCharm(${i})" title="點擊移除" 
+                    class="${containerStyle} ${i === 0 ? 'border-2 border-gray-300 rounded-l-md' : 'border-t-2 border-b-2 border-r-2 border-gray-300'}"
+                    style="box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);">
+                    <img src="${charm.src}" alt="${charm.name}" class="${imgStyle}" />
+                </div>
+            `;
+        } else {
+            slotsHTML += `
+                <div class="w-[50px] h-[40px] border border-dashed border-gray-300 bg-gray-50/50 flex items-center justify-center text-gray-200 text-xs
+                    ${i === 0 ? 'rounded-l-md border-l' : '-ml-[1px]'}">
+                    ·
+                </div>
+            `;
         }
-
+    }
+    container.innerHTML = slotsHTML;
+}
+        
         function addCharm(charmId) {
             if (bracelet.length >= 8) {
                 showToast('最多只能選8個模塊哦！');
