@@ -386,7 +386,7 @@
         const y = startY;
         const isC6 = item.categoryId === 'c6';
 
-        // 1. 畫每個模塊的白底與灰色金屬外框 (確保每個模塊 100% 同寬同高)
+        // 1. 畫每個模塊的白底與灰色金屬外框
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(x, y, charmWidth, charmHeight);
 
@@ -394,21 +394,22 @@
             const img = imgObjects[index];
 
             if (isC6) {
-                // ✨ 吊墜精準對齊邏輯：
-                // 1. 讀取 scale (如 125~130%)，計算放大後的寬度與高度
+                // ✨ 關鍵微調：
                 const scale = (item.scale || 100) / 100;
                 const drawW = charmWidth * scale;
                 const drawH = drawW * (img.height / img.width);
                 
-                // 2. 水平置中，Y 軸精準對齊模塊頂部 (可由 offsetY 微調 ± 像素)
-                const offsetY = item.offsetY || 0;
+                // 水平置中
                 const drawX = x - (drawW - charmWidth) / 2;
-                const drawY = y + offsetY; 
+                
+                // ✨ 透過 item.offsetY (或預設向下壓 4px) 精準控制設計圖上的頂部對齊位置！
+                // 數字越大代表在設計圖上越往下移（預設 +4 剛好補足偏高的落差）
+                const canvasOffsetY = item.offsetY !== undefined ? item.offsetY : 4; 
+                const drawY = y + canvasOffsetY; 
 
-                // 3. 一次性完整繪製，絕不重疊、絕不重影！
                 ctx.drawImage(img, drawX, drawY, drawW, drawH);
             } else {
-                // 一般模塊等比例居中，保持不變形
+                // 一般模塊等比例居中，維持原本完美的長寬比
                 const imgRatio = img.width / img.height;
                 const boxRatio = charmWidth / charmHeight;
 
@@ -429,8 +430,8 @@
             }
         }
 
-        // 2. 畫灰色模塊外框線 (讓所有模塊的金屬上、下框線完美排在一條水平線上)
-        ctx.strokeStyle = '#D1D5DB';
+        // 2. 畫模塊外框線
+        ctx.strokeStyle = 'transparent';
         ctx.lineWidth = 2.5;
         ctx.strokeRect(x, y, charmWidth, charmHeight);
     });
