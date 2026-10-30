@@ -407,11 +407,6 @@
                 ctx.drawImage(img, drawX, drawY, drawW, drawH);
             }
         }
-
-        // 2. 畫模塊外框線
-        ctx.strokeStyle = '#D1D5DB';
-        ctx.lineWidth = 2.5;
-        ctx.strokeRect(x, y, charmWidth, 36);
     });
 
     const dataURL = canvas.toDataURL('image/png');
